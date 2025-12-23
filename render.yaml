@@ -8,7 +8,7 @@ services:
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt
-    predeployCommand: alembic upgrade head
+    preDeployCommand: alembic upgrade head
     startCommand: gunicorn -k uvicorn.workers.UvicornWorker -b 0.0.0.0:$PORT app.main:app --timeout 120
     envVars:
       - key: DATABASE_URL
