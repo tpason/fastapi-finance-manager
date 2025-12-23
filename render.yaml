@@ -1,0 +1,29 @@
+databases:
+  - name: finance-manager-db
+    plan: free
+
+services:
+  - type: web
+    name: fastapi-finance-manager
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    predeployCommand: alembic upgrade head
+    startCommand: gunicorn -k uvicorn.workers.UvicornWorker -b 0.0.0.0:$PORT app.main:app --timeout 120
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: finance-manager-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "false"
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "30"
+      - key: REFRESH_TOKEN_EXPIRE_MINUTES
+        value: "10080"
+      - key: ALGORITHM
+        value: "HS256"
