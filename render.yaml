@@ -8,8 +8,8 @@ services:
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt
-    preDeployCommand: alembic upgrade head
-    startCommand: gunicorn -k uvicorn.workers.UvicornWorker -b 0.0.0.0:$PORT app.main:app --timeout 120
+    # Free tier does not support preDeployCommand; run migrations at start instead.
+    startCommand: alembic upgrade head && gunicorn -k uvicorn.workers.UvicornWorker -b 0.0.0.0:$PORT app.main:app --timeout 120
     envVars:
       - key: DATABASE_URL
         fromDatabase:
